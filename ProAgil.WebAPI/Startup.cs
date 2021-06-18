@@ -12,7 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using ProAgil.WebAPI.Data;
+using ProAgil.Repository;
+
 
 namespace ProAgil.WebAPI
 {
@@ -30,9 +31,10 @@ namespace ProAgil.WebAPI
         {
 
             services.AddControllers();
-            services.AddDbContext<DataContext>(x => 
+            services.AddDbContext<ProAgilContexto>(x => 
                 x.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))
             );
+            services.AddScoped<IProAgilRepository, ProAgilRepository>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProAgil.WebAPI", Version = "v1" });
@@ -53,7 +55,7 @@ namespace ProAgil.WebAPI
             //app.UseHttpsRedirection();
 
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-
+            app.UseStaticFiles();
             app.UseRouting();
 
             app.UseAuthorization();
